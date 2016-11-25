@@ -11,8 +11,6 @@ class Community(Base):
     title = Column(String(64))
     internal_id = Column(String(64))
     address = Column(String(64))
-    unit_price = Column(Integer)
-    prices = Column(String(255))
     total_buildings = Column(String(64))
     total_houses = Column(String(64))
     build_type = Column(String(64))
