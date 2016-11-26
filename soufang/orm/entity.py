@@ -28,6 +28,7 @@ class Community(Base):
 class CommunityPriceHistory(Base):
     __tablename__ = "community_price_history"
     id = Column(String(36), primary_key=True)
+    source = Column(String(10))
     community_id = Column(String(36))
     month = Column(String(10))
     price = Column(Integer)

@@ -31,27 +31,30 @@ class SoufangPipeline(object):
         self.session.close()
 
     def process_item(self, item, spider):
-        com_id = str(uuid.uuid1())
-        com = Community(id = com_id,
-                        source = "soufang",
-                        title = item["title"],
-                        internal_id = item["internal_id"],
-                        address = item["address"],
-                        total_buildings = item["total_buildings"],
-                        total_houses = item["total_houses"],
-                        build_type = item["build_type"],
-                        build_time = item["build_time"],
-                        developer = item["developer"],
-                        property = item["property"],
-                        property_fee = item["property_fee"],
-                        parking_num = item["parking_num"],
-                        green_rate = item["green_rate"],
-                        plot_rate = item["plot_rate"],)
-        self.session.add(com)
+        com = self.session.query(Community).filter(Community.internal_id = item["internal_id"])
+        if not com:
+            com_id = str(uuid.uuid1())
+            com = Community(id = com_id,
+                            source = "soufang",
+                            title = item["title"],
+                            internal_id = item["internal_id"],
+                            address = item["address"],
+                            total_buildings = item["total_buildings"],
+                            total_houses = item["total_houses"],
+                            build_type = item["build_type"],
+                            build_time = item["build_time"],
+                            developer = item["developer"],
+                            property = item["property"],
+                            property_fee = item["property_fee"],
+                            parking_num = item["parking_num"],
+                            green_rate = item["green_rate"],
+                            plot_rate = item["plot_rate"],)
+            self.session.add(com)
 
         for (k,v) in item["prices"].items():
             price_id = str(uuid.uuid1())
             p = CommunityPriceHistory(id = price_id,
+                                    source = 'soufang',
                                     community_id = com_id,
                                     month = k,
                                     price = v,)
