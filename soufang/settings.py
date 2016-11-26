@@ -117,7 +117,7 @@ USER_AGENTS = [
 ]
 
 DB_CONFIG = {
-    'user':'root',
-    'password':'byd123',
+    'user':'spider',
+    'password':'.Boyiding123',
     'db':'house_spider',
 }
