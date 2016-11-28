@@ -31,7 +31,7 @@ class SoufangPipeline(object):
         self.session.close()
 
     def process_item(self, item, spider):
-        com = self.session.query(Community).filter(Community.source = 'soufang', Community.internal_id = item["internal_id"], )
+        com = self.session.query(Community).filter(Community.source == 'soufang', Community.internal_id == item["internal_id"], )
         if not com:
             com_id = str(uuid.uuid1())
             com = Community(id = com_id,
