@@ -39,7 +39,9 @@ class SoufangSpider(scrapy.Spider):
 
     def parse_info(self, response):
         item = response.meta['item']
+        item["source"] = "soufang"
         item["title"] = response.xpath('//h1/a/text()').extract_first()[0:-3]
+        item["district"] = response.xpath('//dd/strong[text()="所属区域："]/../text()').extract_first().split(" ")[0]
         item["address"] = response.xpath('//dd/strong[text()="小区地址："]/../text()').extract_first()
         item["unit_price"] = response.xpath('//dl/dt[text()="本月均价"]/../dd/span/text()').extract_first()
         item["build_time"] = response.xpath('//dd/strong[text()="竣工时间："]/../text()').extract_first()

@@ -11,8 +11,10 @@ import scrapy
 class SoufangItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
+    source = scrapy.Field() #来源
     title = scrapy.Field() #标题
     internal_id = scrapy.Field() #网站内部id
+    district = scrapy.Field() #行政区
     address = scrapy.Field() #地址
     unit_price = scrapy.Field() #当日均价
     build_time = scrapy.Field() #建造时间

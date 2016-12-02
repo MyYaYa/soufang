@@ -59,6 +59,7 @@ COOKIES_ENABLED = False
 #}
 DOWNLOADER_MIDDLEWARES = {
     'soufang.middlewares.RandomUserAgentMiddleware': 543,
+    'soufang.middlewares.ProxyMiddleware': 300
 }
 
 # Enable or disable extensions
@@ -117,7 +118,8 @@ USER_AGENTS = [
 ]
 
 DB_CONFIG = {
-    'user':'spider',
-    'password':'.Boyiding123',
-    'db':'house_spider',
+    'user':'',
+    'password':'',
+    'host': '',
+    'db':'',
 }

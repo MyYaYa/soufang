@@ -5,9 +5,8 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 from .orm.entity import *
 import uuid
 
@@ -22,8 +21,8 @@ class SoufangPipeline(object):
         )
 
     def open_spider(self, spider):
-        engine = create_engine('mysql+pymysql://%s:%s@localhost:3306/%s?charset=utf8' %
-            (self.config.get('user'), self.config.get('password'), self.config.get('db')))
+        engine = create_engine('mysql+pymysql://%s:%s@%s:3306/%s?charset=utf8' %
+            (self.config.get('user'), self.config.get('password'), self.config.get('host'), self.config.get('db')))
         DBsession = sessionmaker(bind=engine)
         self.session = DBsession()
 
@@ -31,14 +30,16 @@ class SoufangPipeline(object):
         self.session.close()
 
     def process_item(self, item, spider):
-        com = self.session.query(Community).filter(Community.source == 'soufang', Community.internal_id == item["internal_id"], )
+        com = self.session.query(Community).filter(and_(Community.source == item["source"], Community.internal_id == item["internal_id"])).first()
         if not com:
             com_id = str(uuid.uuid1())
             com = Community(id = com_id,
-                            source = "soufang",
+                            source = item["source"],
                             title = item["title"],
                             internal_id = item["internal_id"],
+                            district = item["district"],
                             address = item["address"],
+                            unit_price = item["unit_price"],
                             total_buildings = item["total_buildings"],
                             total_houses = item["total_houses"],
                             build_type = item["build_type"],
@@ -52,13 +53,16 @@ class SoufangPipeline(object):
             self.session.add(com)
 
         for (k,v) in item["prices"].items():
-            price_id = str(uuid.uuid1())
-            p = CommunityPriceHistory(id = price_id,
-                                    source = 'soufang',
-                                    community_id = com_id,
-                                    month = k,
-                                    price = v,)
-            self.session.add(p)
+            cph = self.session.query(CommunityPriceHistory).filter(and_(CommunityPriceHistory.community_id == com.id,
+                                                                CommunityPriceHistory.month == k)).first()
+            if not cph:
+                price_id = str(uuid.uuid1())
+                p = CommunityPriceHistory(id = price_id,
+                                        source = item["source"],
+                                        community_id = com.id,
+                                        month = k,
+                                        price = v,)
+                self.session.add(p)
 
         self.session.commit()
         return item
