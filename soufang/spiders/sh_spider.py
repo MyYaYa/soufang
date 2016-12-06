@@ -6,25 +6,22 @@ from soufang.items import SoufangItem
 
 class SoufangSpider(scrapy.Spider):
     name = "soufangsh"
-    # districts = {'chaoyang':'1', 'haidian':'0', 'fengtai':'6',
-    #     'dongcheng':'2', 'xicheng':3, 'shijingshan':7,
-    #     'changping':'12', 'daxing':585, 'tongzhou':10,
-    #     'shunyi':'11', 'fangshan':'8', 'miyun':'13',
-    #     'mentougou':'9', 'huairou':'14', 'yanqing':15,
-    #     'pinggu':'16', 'yanjiao':'987', 'beijingzhoubian':'11817'}
-    districts = {'pudong': '25', 'minhang': '18', 'xuhui': '19',
+    districts = {'minhang': '18', 'xuhui': '19',
                 'baoshan': '30', 'putuo': '28', 'changning': '20',
                 'yangpu': '26', 'songjiang': '586', 'jiading': '29',
                 'hongkou': '23', 'zhabei': '27', 'jingan': '21',
                 'huangpu': '24', 'luwan': '22', 'qingpu': '31',
                 'fengxian': '32', 'jinshan': '35', 'chongming': '996', 'shanghaizhoubian': '1046',}
-    start_urls = ["http://esf.sh.fang.com/housing/%s__%s_0_0_0_1_%s_0" % (y, n, m) for (x,y) in districts.items() for n in ['1','2'] for m in range(1,6)]
+    urls1 = ["http://esf.sh.fang.com/housing/25__%s_0_0_0_1_%s_0" % (n, m) for n in ['1','2'] for m in range(1,6)]
+    urls2 = ["http://esf.sh.fang.com/housing/%s__%s_0_0_0_1_0_0" % (x, y) for (z,x) in districts.items() for y in ['1','2']]
+    urls1.extend(urls2)
+    start_urls = urls1
 
     def parse(self, response):
         next_a_text = response.xpath('//div[@class="fanye gray6"]/a[last()-1]/text()').extract_first()
         if next_a_text == '下一页':
             next_a_href = response.xpath('//div[@class="fanye gray6"]/a[last()-1]/@href').extract_first()
-            next_url = "http://esf.fang.com" + next_a_href
+            next_url = "http://esf.sh.fang.com" + next_a_href
             yield scrapy.Request(url=next_url, callback=self.parse)
 
         for a_href in response.xpath('//div[@class="list rel"]/dl/dd/p[1]/a/@href'):
@@ -34,7 +31,7 @@ class SoufangSpider(scrapy.Spider):
 
     def parse_little(self, response):
         item = SoufangItem()
-        item["city"] = "上海"
+        item["city"] = response.xpath('//*[@id="dsy_H01_01"]/div[1]/a/text()').extract_first()
         item["property"]= response.xpath('//li/strong[text()="物业公司："]/../text()').extract_first()
         item["total_buildings"] = response.xpath('//li/strong[text()="楼栋总数："]/../text()').extract_first()
         src = response.xpath('//div[@class="con_left"]/div[2]/iframe/@src').extract_first()
