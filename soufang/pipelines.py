@@ -37,6 +37,7 @@ class SoufangPipeline(object):
                             source = item["source"],
                             title = item["title"],
                             internal_id = item["internal_id"],
+                            city = item["city"],
                             district = item["district"],
                             address = item["address"],
                             unit_price = item["unit_price"],

@@ -14,7 +14,8 @@ class SoufangItem(scrapy.Item):
     source = scrapy.Field() #来源
     title = scrapy.Field() #标题
     internal_id = scrapy.Field() #网站内部id
-    district = scrapy.Field() #行政区
+    city = scrapy.Field() #所在城市
+    district = scrapy.Field() #所在行政区
     address = scrapy.Field() #地址
     unit_price = scrapy.Field() #当日均价
     build_time = scrapy.Field() #建造时间
