@@ -7,13 +7,13 @@ class RandomUserAgentMiddleware(object):
 
     def process_request(self, request, spider):
         agent = random.choice(USER_AGENTS)
-        print("**************************" + agent)
+        # print("**************************" + agent)
         request.headers.setdefault('User-Agent', agent)
 
 class ProxyMiddleware(object):
 
     def process_request(self, request, spider):
-        request.meta['proxy'] = "https://45.76.150.178:5552"
-        encoded_user_pass = base64.b64encode(b'test:s7e74p3h5a')
+        request.meta['proxy'] = "http://45.76.150.178:5552"
+        encoded_user_pass = base64.b64encode(b'fangchan:Boyiding123')
         request.headers['Proxy-Authorization'] = b'Basic ' + encoded_user_pass
-        print(request.headers['Proxy-Authorization'])
+        # print(request.headers['Proxy-Authorization'])

@@ -53,17 +53,18 @@ class SoufangPipeline(object):
                             plot_rate = item["plot_rate"],)
             self.session.add(com)
 
-        for (k,v) in item["prices"].items():
-            cph = self.session.query(CommunityPriceHistory).filter(and_(CommunityPriceHistory.community_id == com.id,
-                                                                CommunityPriceHistory.month == k)).first()
-            if not cph:
-                price_id = str(uuid.uuid1())
-                p = CommunityPriceHistory(id = price_id,
-                                        source = item["source"],
-                                        community_id = com.id,
-                                        month = k,
-                                        price = v,)
-                self.session.add(p)
+        if 'prices' in item:
+            for (k,v) in item["prices"].items():
+                cph = self.session.query(CommunityPriceHistory).filter(and_(CommunityPriceHistory.community_id == com.id,
+                                                                    CommunityPriceHistory.month == k)).first()
+                if not cph:
+                    price_id = str(uuid.uuid1())
+                    p = CommunityPriceHistory(id = price_id,
+                                            source = item["source"],
+                                            community_id = com.id,
+                                            month = k,
+                                            price = v,)
+                    self.session.add(p)
 
         self.session.commit()
         return item

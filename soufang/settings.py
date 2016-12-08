@@ -118,8 +118,8 @@ USER_AGENTS = [
 ]
 
 DB_CONFIG = {
-    'user':'root',
-    'password':'byd123',
+    'user':'',
+    'password':'',
     'host': 'localhost',
     'db':'house_spider',
 }
